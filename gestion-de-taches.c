@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 typedef struct
 {
@@ -31,7 +32,8 @@ void menu()
     printf("***            4: Supprimer une Tache                      ***\n");
     printf("***            5: Ordonner les Taches                      ***\n");
     printf("***            6: Filtrer les Taches                       ***\n");
-    printf("***            7: Quitter application                      ***\n");
+    printf("***            7: sauvegarder les Taches                   ***\n");
+    printf("***            8: Quitter application                      ***\n");
     printf("**************************************************************\n");
 }
 
@@ -59,11 +61,35 @@ void ajouterTache()
     }
 }
 
+void afficher(int i)
+{
+    printf("Tache %d\n", i + 1);
+    printf("Titre : %s\n", taches[i].titre);
+    printf("Description : %s\n", taches[i].desc);
+    printf("Date d'echeance : %d/%d/%d\n", taches[i].date_fin.jour, taches[i].date_fin.mois, taches[i].date_fin.annee);
+    switch (taches[i].priorite)
+    {
+    case 1:
+        printf("Priorite : Faible\n");
+        break;
+    case 2:
+        printf("Priorite : Moyenne\n");
+        break;
+    case 3:
+        printf("Priorite : Elevee\n");
+        break;
+    default:
+        printf("Priorite : Inconnue\n");
+    }
+    printf("Statut : %s\n", taches[i].statut == 1 ? "complete" : "incomplete");
+    printf("\n--------------------------------------------------------------\n");
+}
+
 void afficherTaches()
 {
     if (nbrTaches <= 0)
     {
-        printf("Liste des taches est vide!!!");
+        printf("Liste des taches est vide!!!\n");
         return;
     }
     else
@@ -73,30 +99,17 @@ void afficherTaches()
         printf("--------------------------------------------------------------\n");
         for (int i = 0; i < nbrTaches; i++)
         {
-            printf("Tache %d\n", i + 1);
-            printf("Titre : %s\n", taches[i].titre);
-            printf("Description : %s\n", taches[i].desc);
-            printf("Date d'echeance : %d/%d/%d\n", taches[i].date_fin.jour, taches[i].date_fin.mois, taches[i].date_fin.annee);
-            switch (taches[i].priorite)
-            {
-            case 1:
-                printf("Priorite : Faible\n");
-                break;
-            case 2:
-                printf("Priorite : Moyenne\n");
-                break;
-            case 3:
-                printf("Priorite : Elevee\n");
-                break;
-            default:
-                printf("Priorite : Inconnue\n");
-            }
-            printf("Statut : %s\n", taches[i].statut == 1 ? "complete" : "incomplete");
-            printf("\n--------------------------------------------------------------\n");
+            afficher(i);
         }
     }
 }
 
+void echange(int i, int j)
+{
+    Tache temp = taches[j];
+    taches[j] = taches[i];
+    taches[i] = temp;
+}
 void modifierTache()
 {
     int index;
@@ -143,7 +156,6 @@ void supprimerTache()
             taches[i].priorite = taches[i + 1].priorite;
             taches[i].statut = taches[i + 1].statut;
         }
-
         nbrTaches--;
         printf("Tache supprimer avec succes.\n");
     }
@@ -154,54 +166,92 @@ void ordonnerTaches()
     int ordre;
     if (nbrTaches <= 0)
     {
-        printf("Liste des taches est vide!!!");
+        printf("Liste des taches est vide!!!\n");
         return;
     }
     else
     {
-        printf("Choisissez l'ordre de tri (1: Croissant, 2: Decroissant): ");
+        printf("Choisissez l'ordre (1: Croissant, 2: Decroissant): ");
         scanf("%d", &ordre);
-        if (ordre == 1)
+        for (int i = 0; i < nbrTaches - 1; i++)
         {
-            for (int i = 0; i < nbrTaches - 1; i++)
+            for (int j = i + 1; j < nbrTaches; j++)
             {
-                for (int j = i + 1; j < nbrTaches; j++)
+                if (ordre == 1)
                 {
                     if (taches[i].date_fin.annee > taches[j].date_fin.annee ||
                         (taches[i].date_fin.annee == taches[j].date_fin.annee && taches[i].date_fin.mois > taches[j].date_fin.mois) ||
                         (taches[i].date_fin.annee == taches[j].date_fin.annee && taches[i].date_fin.mois == taches[j].date_fin.mois && taches[i].date_fin.jour > taches[j].date_fin.jour))
                     {
-                        Tache temp = taches[j];
-                        taches[j] = taches[i];
-                        taches[i] = temp;
+                        echange(i, j);
                     }
+                    printf("Taches ordonnees coissant avec succes.\n");
                 }
-            }
-        }
-        else if (ordre == 2)
-        {
-            for (int i = 0; i < nbrTaches - 1; i++)
-            {
-                for (int j = i + 1; j < nbrTaches; j++)
+                else
                 {
                     if (taches[i].date_fin.annee < taches[j].date_fin.annee ||
                         (taches[i].date_fin.annee == taches[j].date_fin.annee && taches[i].date_fin.mois < taches[j].date_fin.mois) ||
                         (taches[i].date_fin.annee == taches[j].date_fin.annee && taches[i].date_fin.mois == taches[j].date_fin.mois && taches[i].date_fin.jour < taches[j].date_fin.jour))
                     {
-                        Tache temp = taches[j];
-                        taches[j] = taches[i];
-                        taches[i] = temp;
+                        echange(i, j);
                     }
+                    printf("Taches ordonnees decoissant avec succes.\n");
                 }
             }
         }
+        afficherTaches();
     }
-    printf("Taches ordonnees avec succes.\n");
 }
-
 
 void filtrerTaches()
 {
+    int priorite;
+    printf("Entrez la priorite (1: Faible, 2: Moyenne, 3: Elevee) : ");
+    scanf("%d", &priorite);
+    printf("--------------------------------------------------------------\n");
+    printf("|                  Liste des taches filter                   |\n");
+    printf("--------------------------------------------------------------\n");
+    for (int i = 0; i < nbrTaches; i++)
+    {
+        if (taches[i].priorite == priorite)
+        {
+            afficher(i);
+        }
+    }
+}
+
+void sauvegarderTaches()
+{
+    FILE *fichier = fopen("taches.txt", "w");
+    if (fichier == NULL)
+    {
+        printf("Erreur lors de l'ouverture du fichier.\n");
+        return;
+    }
+    for (int i = 0; i < nbrTaches; i++)
+    {
+        fprintf(fichier, "Titre: %s\n", taches[i].titre);
+        fprintf(fichier, "Description: %s\n", taches[i].desc);
+        fprintf(fichier, "Date Fin: %d/%d/%d\n", taches[i].date_fin.jour, taches[i].date_fin.mois, taches[i].date_fin.annee);
+        switch (taches[i].priorite)
+        {
+        case 1:
+            fprintf(fichier, "Priorite: Faible\n");
+            break;
+        case 2:
+            fprintf(fichier, "Priorite: Moyenne\n");
+            break;
+        case 3:
+            fprintf(fichier, "Priorite: Elevee\n");
+            break;
+        default:
+            fprintf(fichier, "Priorite: Inconnue\n");
+        }
+        fprintf(fichier, "Statut: %s\n", taches[i].statut == 1 ? "complete" : "incomplete");
+        fprintf(fichier, "\n--------------------------------------------------------------\n");
+    }
+    fclose(fichier);
+    printf("Les taches sauvegardees avec succes.\n");
 }
 
 int main()
@@ -236,12 +286,15 @@ int main()
             filtrerTaches();
             break;
         case 7:
-            printf("Au revoir !");
+            sauvegarderTaches();
+            break;
+        case 8:
+            printf("Au revoir!");
             return 0;
         default:
-            printf("Choix invalide.");
+            printf("Choix invalide\n");
             break;
         }
-    } while (choix != 7);
+    } while (choix != 8);
     return 0;
 }
