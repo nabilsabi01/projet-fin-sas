@@ -28,8 +28,7 @@
 
 ## Planification
 
-- Semaine 1: Définition des besoins, conception, implémentation des fonctions d'ajout et d'affichage
-- Semaine 2: Implémentation des fonctions de modification, suppression, tri, filtrage, statut, stockage, documentation
+- Semaine 1: Définition des besoins, conception, implémentation des fonctions d'ajout et d'affichage, modification, suppression, tri, filtrage, stockage, documentation.
 
 ## Installation et utilisation
 
