@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 typedef struct
 {
@@ -7,19 +8,12 @@ typedef struct
     int annee;
 } Date;
 
-typedef enum
-{
-    FAIBLE,
-    MOYENNE,
-    ELEVEE
-} Priorite;
-
 typedef struct
 {
     char titre[50];
     char desc[100];
     Date date_fin;
-    Priorite priorite;
+    int priorite;
     int statut;
 } Tache;
 
@@ -45,28 +39,32 @@ void ajouterTache()
 {
     if (nbrTaches == 100)
     {
-        printf("Liste des taches.\n");
+        printf("La liste des taches est pleine.\n");
         return;
     }
-    printf("Titre de la tache : ");
-    scanf(" %[^\n]", taches[nbrTaches].titre);
-    printf("Description de la tache : ");
-    scanf(" %[^\n]", taches[nbrTaches].desc);
-    printf("Date d'echeance (JJ/MM/AAAA) : ");
-    scanf("%d/%d/%d", &taches[nbrTaches].date_fin.jour, &taches[nbrTaches].date_fin.mois, &taches[nbrTaches].date_fin.annee);
-    printf("Priorite (0: FAIBLE, 1: MOYENNE, 2: ELEVEE) : ");
-    scanf("%d", &taches[nbrTaches].priorite);
-    taches[nbrTaches].statut = 0;
-    nbrTaches++;
-    printf("Tache ajoutee avec succes.\n");
+    else
+    {
+        printf("Titre de la tache : ");
+        scanf(" %[^\n]", taches[nbrTaches].titre);
+        printf("Description de la tache : ");
+        scanf(" %[^\n]", taches[nbrTaches].desc);
+        printf("Date d'echeance (JJ/MM/AAAA) : ");
+        scanf("%d/%d/%d", &taches[nbrTaches].date_fin.jour, &taches[nbrTaches].date_fin.mois, &taches[nbrTaches].date_fin.annee);
+        printf("Priorite (1: Faible, 2: Moyenne, 3: Elevee) : ");
+        scanf("%d", &taches[nbrTaches].priorite);
+        printf("Priorite (1: complete , 2: incomplete) : ");
+        scanf("%d", &taches[nbrTaches].statut);
+        nbrTaches++;
+        printf("Tache ajoutee avec succes.\n");
+    }
 }
 
 void afficherTaches()
 {
-    char priorite[10];
-    if (nbrTaches < 0)
+    if (nbrTaches <= 0)
     {
         printf("Liste des taches est vide!!!");
+        return;
     }
     else
     {
@@ -75,24 +73,25 @@ void afficherTaches()
         printf("--------------------------------------------------------------\n");
         for (int i = 0; i < nbrTaches; i++)
         {
-            printf("Tache %d\n", i+1);
+            printf("Tache %d\n", i + 1);
             printf("Titre : %s\n", taches[i].titre);
             printf("Description : %s\n", taches[i].desc);
             printf("Date d'echeance : %d/%d/%d\n", taches[i].date_fin.jour, taches[i].date_fin.mois, taches[i].date_fin.annee);
-            switch (taches[i].priorite) {
-                case FAIBLE:
-                    printf("Priorite : Faible\n");
-                    break;
-                case MOYENNE:
-                    printf("Priorite : Moyenne\n");
-                    break;
-                case ELEVEE:
-                    printf("Priorite : Elevee\n");
-                    break;
-                default:
-                    printf("Priorite : Inconnue\n");
+            switch (taches[i].priorite)
+            {
+            case 1:
+                printf("Priorite : Faible\n");
+                break;
+            case 2:
+                printf("Priorite : Moyenne\n");
+                break;
+            case 3:
+                printf("Priorite : Elevee\n");
+                break;
+            default:
+                printf("Priorite : Inconnue\n");
             }
-            printf("Statut : %s\n", taches[i].statut ? "complete" : "incomplete");
+            printf("Statut : %s\n", taches[i].statut == 1 ? "complete" : "incomplete");
             printf("\n--------------------------------------------------------------\n");
         }
     }
@@ -100,10 +99,54 @@ void afficherTaches()
 
 void modifierTache()
 {
+    int index;
+    printf("Entrez le numero de tache a modifier: ");
+    scanf("%d", &index);
+    if (index < 1 || index > nbrTaches)
+    {
+        printf("Numero de tache invalide.\n");
+        return;
+    }
+    else
+    {
+        printf("Nouveau titre de la tache : ");
+        scanf(" %[^\n]", taches[index - 1].titre);
+        printf("Nouvelle description de la tache : ");
+        scanf(" %[^\n]", taches[index - 1].desc);
+        printf("Nouvelle date d'echeance (JJ/MM/AAAA) : ");
+        scanf("%d/%d/%d", &taches[index - 1].date_fin.jour, &taches[index - 1].date_fin.mois, &taches[index - 1].date_fin.annee);
+        printf("Nouvelle priorite (1: Faible, 2: Moyenne, 3: Elevee) : ");
+        scanf("%d", &taches[index - 1].priorite);
+        printf("Priorite (1: complete , 2: incomplete) : ");
+        scanf("%d", &taches[nbrTaches - 1].statut);
+        printf("Tache modifiee avec succes.\n");
+    }
 }
 
 void supprimerTache()
 {
+    int index;
+    printf("Entrez le numero de tache a supprimer: ");
+    scanf("%d", &index);
+    if (index < 1 || index > nbrTaches)
+    {
+        printf("Numero de tache invalide.\n");
+        return;
+    }
+    else
+    {
+        for (int i = index - 1; i < index - 1; i++)
+        {
+            strcpy(taches[i].titre, taches[i + 1].titre);
+            strcpy(taches[i].desc, taches[i + 1].desc);
+            taches[i].date_fin = taches[i + 1].date_fin;
+            taches[i].priorite = taches[i + 1].priorite;
+            taches[i].statut = taches[i + 1].statut;
+        }
+
+        nbrTaches--;
+        printf("Tache supprimer avec succes.\n");
+    }
 }
 
 void ordonnerTaches()
