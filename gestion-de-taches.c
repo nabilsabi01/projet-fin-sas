@@ -1,5 +1,28 @@
 #include <stdio.h>
 
+Tache taches[100]; 
+int nbrTaches = 0;
+
+typedef struct {
+    int jour;
+    int mois;
+    int annee;
+} Date;
+
+typedef enum {
+    FAIBLE,
+    MOYENNE,
+    ELEVEE
+} Priorite;
+
+typedef struct {
+    char titre[50];
+    char desc[100];
+    Date date_fin;
+    Priorite priorite;
+    int statut;
+} Tache;
+
 void menu(){
     printf("**************************************************************\n");
     printf("***----------------------- OneHand ------------------------***\n");
@@ -17,12 +40,29 @@ void menu(){
     printf("**************************************************************\n");
 }
 
-void ajouterTache(){}
-void afficherTaches(){}
-void modifierTache(){}
-void supprimerTache(){}
-void ordonnerTaches(){}
-void filtrerTaches(){}
+void ajouterTache(){
+
+}
+
+void afficherTaches(){
+
+}
+
+void modifierTache(){
+
+}
+
+void supprimerTache(){ 
+
+}
+
+void ordonnerTaches(){
+
+}
+
+void filtrerTaches(){
+
+}
 
 int main()
 { 
