@@ -151,7 +151,54 @@ void supprimerTache()
 
 void ordonnerTaches()
 {
+    int ordre;
+    if (nbrTaches <= 0)
+    {
+        printf("Liste des taches est vide!!!");
+        return;
+    }
+    else
+    {
+        printf("Choisissez l'ordre de tri (1: Croissant, 2: Decroissant): ");
+        scanf("%d", &ordre);
+        if (ordre == 1)
+        {
+            for (int i = 0; i < nbrTaches - 1; i++)
+            {
+                for (int j = i + 1; j < nbrTaches; j++)
+                {
+                    if (taches[i].date_fin.annee > taches[j].date_fin.annee ||
+                        (taches[i].date_fin.annee == taches[j].date_fin.annee && taches[i].date_fin.mois > taches[j].date_fin.mois) ||
+                        (taches[i].date_fin.annee == taches[j].date_fin.annee && taches[i].date_fin.mois == taches[j].date_fin.mois && taches[i].date_fin.jour > taches[j].date_fin.jour))
+                    {
+                        Tache temp = taches[j];
+                        taches[j] = taches[i];
+                        taches[i] = temp;
+                    }
+                }
+            }
+        }
+        else if (ordre == 2)
+        {
+            for (int i = 0; i < nbrTaches - 1; i++)
+            {
+                for (int j = i + 1; j < nbrTaches; j++)
+                {
+                    if (taches[i].date_fin.annee < taches[j].date_fin.annee ||
+                        (taches[i].date_fin.annee == taches[j].date_fin.annee && taches[i].date_fin.mois < taches[j].date_fin.mois) ||
+                        (taches[i].date_fin.annee == taches[j].date_fin.annee && taches[i].date_fin.mois == taches[j].date_fin.mois && taches[i].date_fin.jour < taches[j].date_fin.jour))
+                    {
+                        Tache temp = taches[j];
+                        taches[j] = taches[i];
+                        taches[i] = temp;
+                    }
+                }
+            }
+        }
+    }
+    printf("Taches ordonnees avec succes.\n");
 }
+
 
 void filtrerTaches()
 {
